@@ -1,0 +1,26 @@
+version: '3'
+services:
+  #Бэкенд для соц сети
+  social-network-service:
+    container_name: 'social-network-service'
+    restart: 'unless-stopped'
+    build:
+      context: './'
+      dockerfile: 'Dockerfile.dev'
+    ports:
+      - '6069:6060'
+    networks:
+      - 'jmu_network'
+    volumes:
+      - './:/var/www/api'
+    environment:
+      DEV_STAGE: 'Alpha'
+      DEV_VERSION: 'v1.0.0'
+      DB_HOST: 'postgres'
+      DB_USER: 'dbjmu'
+      DB_PASSWORD: 'Afgihn215zxdg'
+      DB_NAME: 'social'
+
+networks:
+  jmu_network:
+    external: true

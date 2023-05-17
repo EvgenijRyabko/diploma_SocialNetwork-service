@@ -11,7 +11,7 @@ module.exports.social = {
     charset: 'utf8',
     timezone: 'Europe/Moscow',
   },
-  searchPath: ['public', 'social'],
+  searchPath: ['public'],
   pool: { min: 0, max: 50 },
   acquireConnectionTimeout: 10000,
   migrations: {

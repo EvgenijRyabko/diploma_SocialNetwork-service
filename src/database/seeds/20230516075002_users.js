@@ -1,4 +1,3 @@
-const { AES } = require('../../crypto/crypto');
 require('dotenv').config();
 
 /**
@@ -12,31 +11,31 @@ exports.seed = async function (knex) {
     {
       id: 1,
       login: 'DjonniKiller',
-      password: AES.encode('hello', process.env.CRYPTO),
+      password: '0c3c000000000000000d00000000003c:3763013532a0af1a28be6b28c86460f9',
       name: 'Евгений Рябко',
     },
     {
       id: 2,
       login: 'WerWoulf',
-      password: AES.encode('1978', process.env.CRYPTO),
+      password: '0c3c000000000000000d00000000003c:3763013532a0af1a28be6b28c86460f9',
       name: 'Роман Рябко',
     },
     {
       id: 3,
       login: 'astrelkov',
-      password: AES.encode('strel', process.env.CRYPTO),
+      password: '0c3c000000000000000d00000000003c:3763013532a0af1a28be6b28c86460f9',
       name: 'Стрельцов Андрей',
     },
     {
       id: 4,
       login: 'deer',
-      password: AES.encode('deer', process.env.CRYPTO),
+      password: '0c3c000000000000000d00000000003c:3763013532a0af1a28be6b28c86460f9',
       name: 'Олень',
     },
     {
       id: 5,
       login: 'javascript',
-      password: AES.encode('javascript', process.env.CRYPTO),
+      password: '0c3c000000000000000d00000000003c:3763013532a0af1a28be6b28c86460f9',
       name: 'Джава Скрыпт',
     },
   ]);

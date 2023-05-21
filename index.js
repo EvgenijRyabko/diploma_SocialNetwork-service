@@ -13,10 +13,9 @@ app.use(cors());
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
 
-const { auth: authApi, profile: profileApi, users: usersApi, posts: postsApi } = router(app);
+const { auth: authApi, users: usersApi, posts: postsApi } = router(app);
 
 authApi(`${baseurl}/auth`);
-profileApi(`${baseurl}/profile`);
 usersApi(`${baseurl}/users`);
 postsApi(`${baseurl}/posts`);
 

@@ -6,9 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "migrate": "knex migrate:latest --env social",
+    "migrate": "knex migrate:latest --env main && knex migrate:latest --env social",
     "seeds": "knex seed:run --env social",
-    "rollback": "knex migrate:rollback --all --env social"
+    "rollback": "knex migrate:rollback --env social && knex migrate:rollback --env main"
   },
   "author": "",
   "license": "ISC",

@@ -1,7 +1,4 @@
-const multer = require('multer');
-
-const upload = multer({ dest: './src/uploads/' });
-
+const { Router } = require('express');
 const {
   getUsers,
   getByID,
@@ -9,16 +6,14 @@ const {
   uploadImagesByUser,
 } = require('../../controllers/users');
 
-module.exports = (app, url, ...args) => {
-  // Получить пользователей
-  app.get(`${url}/getAll`, [...args], getUsers);
+const router = Router();
 
-  // Закинуть изображение профиля
-  app.post(`${url}/uploadProfile/:id`, upload.array('photo'), uploadProfileImageByUser);
+router.get('/all', getUsers);
 
-  // Закинуть изображения на страницу
-  app.post(`${url}/upload/:id`, [...args], uploadImagesByUser);
+router.post('/uploadProfile', uploadProfileImageByUser);
 
-  // Получить пользователя по id
-  app.get(`${url}/:id`, [...args], getByID);
-};
+router.post(`/upload`, uploadImagesByUser);
+
+router.get(`/:id`, getByID);
+
+module.exports = router;

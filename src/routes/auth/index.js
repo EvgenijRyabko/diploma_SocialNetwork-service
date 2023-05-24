@@ -1,10 +1,12 @@
+const { Router } = require('express');
 const { Auth } = require('../../controllers/auth');
 
-module.exports = (app, url) => {
-  // Зарегестрироваться на сайте
-  app.post(`${url}/signup`);
-  // Войти на сайт
-  app.post(`${url}/signin`, Auth);
-  // Выйти с сайта
-  app.post(`${url}/signout`);
-};
+const router = Router();
+
+router.post('/signup');
+
+router.post('signin', Auth);
+
+router.post('signout');
+
+module.exports = router;

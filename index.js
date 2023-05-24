@@ -1,4 +1,5 @@
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const bp = require('body-parser');
 const cors = require('cors');
 const router = require('./src/routes/router');
@@ -12,6 +13,15 @@ const baseurl = '/api';
 app.use(cors());
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
+
+app.use(
+  fileUpload({
+    createParentPath: true,
+    limits: {
+      fileSize: 1073741824, // 1GB (число в байтах)
+    },
+  }),
+);
 
 const { auth: authApi, users: usersApi, posts: postsApi } = router(app);
 

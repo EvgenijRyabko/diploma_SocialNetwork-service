@@ -84,15 +84,15 @@ const uploadProfileImageByUser = async (req, res) => {
 
     if (!checkPath) await fs.promises.mkdir(path, { recursive: true });
 
-    const arrayFiles = req.body;
+    //  const arrayFiles = req.file;
 
     console.log(req.body);
 
-    if (Array.isArray(arrayFiles)) {
-      for (const iterator of arrayFiles) {
-        await writeProfileImage(path + iterator.name, idUser, iterator.data.data);
-      }
-    } else await writeProfileImage(path + arrayFiles.name, idUser, arrayFiles.data.data);
+    //  if (Array.isArray(arrayFiles)) {
+    //    for (const iterator of arrayFiles) {
+    //      await writeProfileImage(path + iterator.name, idUser, iterator.data.data);
+    //    }
+    //  } else await writeProfileImage(path + arrayFiles.name, idUser, arrayFiles.data.data);
 
     res.status(200).json([]);
   } catch (e) {

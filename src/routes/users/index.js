@@ -1,3 +1,7 @@
+const multer = require('multer');
+
+const upload = multer({ dest: './src/uploads/' });
+
 const {
   getUsers,
   getByID,
@@ -10,7 +14,7 @@ module.exports = (app, url, ...args) => {
   app.get(`${url}/getAll`, [...args], getUsers);
 
   // Закинуть изображение профиля
-  app.post(`${url}/uploadProfile/:id`, [...args], uploadProfileImageByUser);
+  app.post(`${url}/uploadProfile/:id`, upload.array('photo'), uploadProfileImageByUser);
 
   // Закинуть изображения на страницу
   app.post(`${url}/upload/:id`, [...args], uploadImagesByUser);

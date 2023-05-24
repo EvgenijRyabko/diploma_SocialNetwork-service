@@ -5,8 +5,8 @@ const router = Router();
 
 router.post('/signup');
 
-router.post('signin', Auth);
+router.post('/signin', Auth);
 
-router.post('signout');
+router.post('/signout');
 
 module.exports = router;

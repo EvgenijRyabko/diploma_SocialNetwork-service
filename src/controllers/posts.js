@@ -1,11 +1,11 @@
-const { knexConnection } = require('../database/connection');
+const { main } = require('../database/connection');
 
 const getPosts = async (req, res) => {
   const { id } = req.params;
   try {
     if (!id) throw 'Параметр id не найден!';
 
-    const result = await knexConnection('posts').where('author', id);
+    const result = await main('posts').where('author', id);
 
     res.status(200).send(result);
   } catch (err) {
@@ -21,7 +21,7 @@ const createPost = async (req, res) => {
     if (!id) throw 'Параметр id не найден!';
     if (!text) throw 'Текст не указан!';
 
-    await knexConnection('posts').insert({
+    await main('posts').insert({
       header,
       text,
       author: id,
@@ -40,7 +40,7 @@ const deletePost = async (req, res) => {
   try {
     if (!id) throw 'Параметр id не найден!';
 
-    await knexConnection('posts').where('id', id).del();
+    await main('posts').where('id', id).del();
 
     res.status(200).json([]);
   } catch (err) {

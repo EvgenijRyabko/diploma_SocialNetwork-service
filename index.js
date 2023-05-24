@@ -1,5 +1,6 @@
 const express = require('express');
 const fileUpload = require('express-fileupload');
+const bp = require('body-parser');
 const apiRoutes = require('./src/routes/api');
 
 require('dotenv').config();
@@ -15,6 +16,10 @@ app.use(
     },
   }),
 );
+
+app.use(bp.json());
+app.use(bp.urlencoded({ extended: true }));
+app.use(express.static('files'));
 
 app.use('/api', apiRoutes);
 

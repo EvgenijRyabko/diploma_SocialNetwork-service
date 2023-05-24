@@ -10,7 +10,7 @@ const router = Router();
 
 router.get('/all', getUsers);
 
-router.post('/uploadProfile', uploadProfileImageByUser);
+router.post('/uploadProfile/:id', uploadProfileImageByUser);
 
 router.post(`/upload`, uploadImagesByUser);
 

@@ -1,4 +1,4 @@
-const { knexConnection } = require('../database/connection');
+const { main } = require('../database/connection');
 const { errorHandler } = require('../utils/errorHandler');
 const AES = require('../crypto/AES');
 const JWT = require('../crypto/JWT');
@@ -15,7 +15,7 @@ const Auth = async (req, res) => {
       if (req.body.login && req.body.password) {
         const login = req.body.login.trim();
 
-        const user = await knexConnection('users').where('login', login).first();
+        const user = await main('users').where('login', login).first();
 
         if (user) {
           userData = { ...user };

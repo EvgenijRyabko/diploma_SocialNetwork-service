@@ -1,9 +1,9 @@
 const fs = require('fs');
-const { knexConnection } = require('../database/connection');
+const { main } = require('../database/connection');
 
 const getUsers = async (req, res) => {
   try {
-    const result = await knexConnection('users');
+    const result = await main('users');
 
     res.status(200).send(result);
   } catch (err) {
@@ -16,7 +16,7 @@ const getByID = async (req, res) => {
   try {
     if (!id) throw 'Парамаетр id не найден!';
 
-    const result = await knexConnection('users').where('id', id);
+    const result = await main('users').where('id', id);
 
     res.status(200).send(result);
   } catch (err) {
@@ -37,14 +37,14 @@ const writeProfileImage = async (path, idUser, buffer) => {
   // создать файл
   await fs.promises.writeFile(path, Buffer.from(buffer), 'UTF-8');
   // создать запись в бд
-  await knexConnection('users').where('id', idUser).update('profile-img', path);
+  await main('users').where('id', idUser).update('profile-img', path);
 };
 
 const writeImages = async (path, idUser, buffer) => {
   // создать файл
   await fs.promises.writeFile(path, Buffer.from(buffer), 'UTF-8');
   // создать запись в бд
-  await knexConnection('users').where('id', idUser).update('images', path);
+  await main('users').where('id', idUser).update('images', path);
 };
 
 const uploadImagesByUser = async (req, res) => {
@@ -86,7 +86,7 @@ const uploadProfileImageByUser = async (req, res) => {
 
     //  const arrayFiles = req.file;
 
-    console.log(req.body);
+    console.log(req.files);
 
     //  if (Array.isArray(arrayFiles)) {
     //    for (const iterator of arrayFiles) {

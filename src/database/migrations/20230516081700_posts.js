@@ -3,7 +3,7 @@
  * @returns { Promise<void> }
  */
 exports.up = function (knex) {
-  return knex.schema.withSchema('social').createTable('posts', (table) => {
+  return knex.schema.withSchema('public').createTable('posts', (table) => {
     table.increments('id').primary().comment('Идентификатор публикации');
     table.string('header').comment('Заголовок публикации');
     table.string('text', 1000).notNullable().comment('Содержание публикации');
@@ -19,5 +19,5 @@ exports.up = function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = function (knex) {
-  return knex.schema.withSchema('social').dropTableIfExists('posts');
+  return knex.schema.withSchema('public').dropTableIfExists('posts');
 };

@@ -1,3 +1,8 @@
+# Порты:
+# 6060 - Бэкенд
+# 8432 - postgreSQL
+# 8072 - pgAdmin
+
 version: '3'
 services:
   #Бэкенд для соц сети
@@ -10,17 +15,47 @@ services:
     ports:
       - '6069:6060'
     networks:
-      - 'jmu_network'
+      - social_network
     volumes:
       - './:/var/www/api'
     environment:
       DEV_STAGE: 'Alpha'
       DEV_VERSION: 'v1.0.0'
-      DB_HOST: 'postgres'
-      DB_USER: 'dbjmu'
+      DB_HOST: 'db-social'
+      DB_USER: 'postgres'
       DB_PASSWORD: 'Afgihn215zxdg'
       DB_NAME: 'social'
 
+    # База данных для локальной разработки
+  db-social:
+    image: postgres:14
+    container_name: social_postgres
+    restart: always
+    networks:
+      - social_network
+    environment:
+      POSTGRES_PASSWORD: Afgihn215zxdg
+      POSTGRES_DB: social
+    ports:
+      - 9432:5432
+
+  # Интерфейс для БД для локальной разработки
+  pgadmin:
+    image: 'dpage/pgadmin4:4'
+    container_name: 'pgadmin-social'
+    depends_on:
+      - 'db-social'
+    ports:
+      - '8085:5072'
+    restart: 'unless-stopped'
+    networks:
+      - social_network
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'root@root.org'
+      PGADMIN_DEFAULT_PASSWORD: 'root'
+      PGADMIN_LISTEN_ADDRESS: '0.0.0.0'
+      PGADMIN_LISTEN_PORT: '5072'
+
 networks:
-  jmu_network:
+  social_network:
     external: true

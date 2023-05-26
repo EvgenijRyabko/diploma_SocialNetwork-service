@@ -13,6 +13,10 @@ exports.seed = async function (knex) {
       login: 'DjonniKiller',
       password: '0c3c000000000000000d00000000003c:3763013532a0af1a28be6b28c86460f9',
       name: 'Евгений Рябко',
+      education: 'Колледж ЛНУ им. В.Даля',
+      city: 'Луганск',
+      status: 'На чиле, на раслабоне',
+      birth_date: '2003-11-24',
     },
     {
       id: 2,

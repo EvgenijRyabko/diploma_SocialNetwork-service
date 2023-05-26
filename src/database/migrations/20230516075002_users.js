@@ -7,10 +7,12 @@ exports.up = function (knex) {
     table.increments('id').comment('ID пользователя');
     table.string('login').notNullable().comment('Логин пользователя');
     table.string('password').notNullable().comment('Пароль пользователя');
-    table.string('profile-img').comment('Изображение профиля');
+    table.string('profile_img').comment('Изображение профиля');
     table.string('name').notNullable().comment('Наименование пользователя');
-    table.string('status').comment('Статус пользователя');
-    table.date('birth-date').comment('Дата рождения');
+    table.string('city').comment('Город проживания');
+    table.string('education').comment('Образование');
+    table.string('status').checkLength('<=', 50).comment('Статус пользователя');
+    table.date('birth_date').comment('Дата рождения');
   });
 };
 

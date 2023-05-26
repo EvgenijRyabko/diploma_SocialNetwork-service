@@ -10,6 +10,7 @@ const PORT = process.env.APP_PORT || 6060;
 
 app.use(
   fileUpload({
+    debug: true,
     createParentPath: true,
     limits: {
       fileSize: 1073741824, // 1GB (число в байтах)
@@ -19,7 +20,7 @@ app.use(
 
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
-app.use(express.static('files'));
+// app.use(express.static('files'));
 
 app.use('/api', apiRoutes);
 

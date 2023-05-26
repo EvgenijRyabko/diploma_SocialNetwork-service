@@ -35,6 +35,7 @@ const checkDirectory = async (path) => {
 
 const writeProfileImage = async (path, idUser, buffer) => {
   // создать файл
+  console.log(path);
   await fs.promises.writeFile(path, Buffer.from(buffer), 'UTF-8');
   // создать запись в бд
   await main('users').where('id', idUser).update('profile-img', path);
@@ -78,25 +79,18 @@ const uploadProfileImageByUser = async (req, res) => {
   try {
     if (!idUser) throw 'Параметр idTerminal не найден';
 
-    const path = `uploadFiles/${idUser}/profile/`;
+    const path = `/src/uploads/${idUser}/profile/`;
 
     const checkPath = await checkDirectory(path);
 
     if (!checkPath) await fs.promises.mkdir(path, { recursive: true });
 
-    //  const arrayFiles = req.file;
+    const { file } = req.files;
 
-    console.log(req.files);
+    await writeProfileImage(path + file.name, idUser, file.data);
 
-    //  if (Array.isArray(arrayFiles)) {
-    //    for (const iterator of arrayFiles) {
-    //      await writeProfileImage(path + iterator.name, idUser, iterator.data.data);
-    //    }
-    //  } else await writeProfileImage(path + arrayFiles.name, idUser, arrayFiles.data.data);
-
-    res.status(200).json([]);
+    res.status(200).end();
   } catch (e) {
-    console.log(e);
     const error = new Error(e);
     res.status(500).json({ message: error.message });
   }

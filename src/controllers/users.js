@@ -6,8 +6,9 @@ const getUsers = async (req, res) => {
     const result = await main('users');
 
     res.status(200).send(result);
-  } catch (err) {
-    res.status(500).send(err);
+  } catch (e) {
+    const error = new Error(e);
+    res.status(500).send({ message: error.message });
   }
 };
 
@@ -19,8 +20,9 @@ const getByID = async (req, res) => {
     const result = await main('users').where('id', id);
 
     res.status(200).send(result);
-  } catch (err) {
-    res.status(500).send(err);
+  } catch (e) {
+    const error = new Error(e);
+    res.status(500).send({ message: error.message });
   }
 };
 
@@ -35,10 +37,9 @@ const checkDirectory = async (path) => {
 
 const writeProfileImage = async (path, idUser, buffer) => {
   // создать файл
-  console.log(path);
-  await fs.promises.writeFile(path, Buffer.from(buffer), 'UTF-8');
+  await fs.promises.writeFile(`src/uploads/${path}`, Buffer.from(buffer), 'UTF-8');
   // создать запись в бд
-  await main('users').where('id', idUser).update('profile-img', path);
+  await main('users').where('id', idUser).update('profile_img', path);
 };
 
 const writeImages = async (path, idUser, buffer) => {
@@ -70,16 +71,16 @@ const uploadImagesByUser = async (req, res) => {
     res.status(200).json([]);
   } catch (e) {
     const error = new Error(e);
-    res.status(500).json({ message: error.message });
+    res.status(500).send({ message: error.message });
   }
 };
 
 const uploadProfileImageByUser = async (req, res) => {
   const { id: idUser } = req.params;
   try {
-    if (!idUser) throw 'Параметр idTerminal не найден';
+    if (!idUser) throw 'Параметр idUser не найден';
 
-    const path = `/src/uploads/${idUser}/profile/`;
+    const path = `${idUser}/profile/`;
 
     const checkPath = await checkDirectory(path);
 
@@ -89,10 +90,28 @@ const uploadProfileImageByUser = async (req, res) => {
 
     await writeProfileImage(path + file.name, idUser, file.data);
 
-    res.status(200).end();
+    res.status(200).send(path + file.name);
   } catch (e) {
     const error = new Error(e);
-    res.status(500).json({ message: error.message });
+    res.status(500).send({ message: error.message });
+  }
+};
+
+const getFollowersList = async (req, res) => {
+  const { id: idUser } = req.params;
+  try {
+    if (!idUser) throw 'Параметр idUser не найден';
+
+    const followersArray = await main('followers').select('target_id').where('source_id', idUser);
+    const friendsArray = await main('friends').where('user1', idUser).orWhere('user2', idUser);
+
+    res.status(200).send({
+      followers: followersArray.map((el) => el.target_id),
+      friends: friendsArray.map((el) => (el.user1 === idUser ? el.user1 : el.user2)),
+    });
+  } catch (e) {
+    const error = new Error(e);
+    res.status(500).send({ message: error.message });
   }
 };
 
@@ -101,4 +120,5 @@ module.exports = {
   getByID,
   uploadImagesByUser,
   uploadProfileImageByUser,
+  getFollowersList,
 };

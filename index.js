@@ -1,27 +1,14 @@
 const express = require('express');
-const fileUpload = require('express-fileupload');
-const bp = require('body-parser');
+const path = require('path');
 const apiRoutes = require('./src/routes/api');
 
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.APP_PORT || 6060;
+const PORT = process.env.APP_PORT || 6069;
 
-app.use(
-  fileUpload({
-    debug: true,
-    createParentPath: true,
-    limits: {
-      fileSize: 1073741824, // 1GB (число в байтах)
-    },
-  }),
-);
-
-app.use(bp.json());
-app.use(bp.urlencoded({ extended: true }));
-// app.use(express.static('files'));
-
+app.use(express.json({ extended: true }));
+app.use('/storage', express.static(path.join(__dirname, 'src/uploads')));
 app.use('/api', apiRoutes);
 
 app.listen(PORT, () => {

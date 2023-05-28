@@ -6,7 +6,7 @@ exports.up = function (knex) {
   return knex.schema.withSchema('public').createTable('albums', (table) => {
     table.increments('id').comment('ID альбома');
     table.string('name').notNullable().comment('Название альбома');
-    table.integer('user_id').notNullable().comment('Пароль пользователя');
+    table.integer('user_id').notNullable().comment('Пользователь');
     table.timestamp('created_at').defaultTo(knex.fn.now());
 
     table.foreign('user_id').references('users.id').onUpdate('Cascade').onDelete('Cascade');

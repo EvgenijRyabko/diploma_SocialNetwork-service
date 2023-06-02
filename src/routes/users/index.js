@@ -27,9 +27,9 @@ router.post(
 
 router.post(`/upload`, uploadImagesByUser);
 
-router.update('/subscribe');
+// router.update('/subscribe');
 
-router.update('/unsubscribe');
+// router.update('/unsubscribe');
 
 router.get(`/:id`, getByID);
 

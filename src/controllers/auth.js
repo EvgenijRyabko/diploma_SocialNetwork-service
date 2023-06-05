@@ -68,6 +68,30 @@ const Auth = async (req, res) => {
   await CheckLogin(req, res);
 };
 
+const Register = async (req, res) => {
+  const { username, login, password } = req.body;
+
+  try {
+    if (!username || !login || !password) throw 'Поля не заполнены!';
+
+    const user = await main('users').where('login', login).first();
+    if (user) throw 'Логин занят!';
+
+    await main('users').insert({
+      login,
+      password,
+      name: username,
+    });
+    console.log('Вставка пользователя');
+
+    res.status(200).end();
+  } catch (e) {
+    const error = errorHandler(e);
+    res.status(error.code).send({ error: error.message });
+  }
+};
+
 module.exports = {
   Auth,
+  Register,
 };

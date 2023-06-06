@@ -86,6 +86,7 @@ const Register = async (req, res) => {
 
     res.status(200).end();
   } catch (e) {
+    console.log(e);
     const error = errorHandler(e);
     res.status(error.code).send({ error: error.message });
   }

@@ -37,7 +37,7 @@ const checkDirectory = async (path) => {
 
 const writeProfileImage = async (path, idUser, buffer) => {
   // создать файл
-  await fs.promises.writeFile(`src/uploads/${path}`, Buffer.from(buffer), 'UTF-8');
+  await fs.promises.writeFile(`src/uploads/${path}`, buffer);
   // создать запись в бд
   await main('users').where('id', idUser).update('profile_img', path);
 };
@@ -86,12 +86,19 @@ const uploadProfileImageByUser = async (req, res) => {
 
     if (!checkPath) await fs.promises.mkdir(path, { recursive: true });
 
-    const { file } = req.files;
+    const { file } = req.body;
+    console.log(file);
+    // file = file.replace(/^data:image\/\w+;base64,/, '');
+    // file = file.replace(/ /g, '+');
 
-    await writeProfileImage(path + file.name, idUser, file.data);
+    const buffer = Buffer.from(file, 'base64');
+    console.log(buffer);
 
-    res.status(200).send(path + file.name);
+    await writeProfileImage(`${path}avatar.jpg`, idUser, buffer);
+
+    res.status(200).send(`${path}avatar.jpg`);
   } catch (e) {
+    console.log(e);
     const error = new Error(e);
     res.status(500).send({ message: error.message });
   }

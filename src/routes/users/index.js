@@ -6,6 +6,8 @@ const {
   uploadProfileImageByUser,
   uploadImagesByUser,
   getFollowersList,
+  subscribe,
+  unSubscribe,
 } = require('../../controllers/users');
 
 const router = Router();
@@ -27,9 +29,9 @@ router.post(
 
 router.post(`/upload`, uploadImagesByUser);
 
-// router.update('/subscribe');
+router.post('/subscribe', subscribe);
 
-// router.update('/unsubscribe');
+router.post('/unsubscribe', unSubscribe);
 
 router.get(`/:id`, getByID);
 

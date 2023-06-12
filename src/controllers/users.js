@@ -86,15 +86,9 @@ const uploadProfileImageByUser = async (req, res) => {
 
     if (!checkPath) await fs.promises.mkdir(path, { recursive: true });
 
-    const { file } = req.body;
-    console.log(file);
-    // file = file.replace(/^data:image\/\w+;base64,/, '');
-    // file = file.replace(/ /g, '+');
+    const { file } = req.files;
 
-    const buffer = Buffer.from(file, 'base64');
-    console.log(buffer);
-
-    await writeProfileImage(`${path}avatar.jpg`, idUser, buffer);
+    await writeProfileImage(`${path}avatar.jpg`, idUser, file.data);
 
     res.status(200).send(`${path}avatar.jpg`);
   } catch (e) {
@@ -122,10 +116,72 @@ const getFollowersList = async (req, res) => {
   }
 };
 
+const checkSubscribe = async (source, target) => {
+  const isSubscriber = await main('followers')
+    .where('source_id', target)
+    .where('target_id', source)
+    .first();
+
+  return !!isSubscriber;
+};
+
+const checkFriend = async (user1, user2) => {
+  const isFriend = await main('friends')
+    .where('user1', user1)
+    .where('user2', user2)
+    .orWhere('user1', user2)
+    .where('user2', user1)
+    .first();
+
+  return isFriend;
+};
+
+const subscribe = async (req, res) => {
+  const { source, target } = req.body;
+  try {
+    if (!source || !target) throw 'Ошибка при подписке';
+
+    if (checkSubscribe(source, target)) {
+      await main('followers').delete().where('source_id', target).where('target_id', source);
+      await main('friends').insert({ user1: source, user2: target });
+    } else {
+      await main('followers').insert({ source_id: source, target_id: target });
+    }
+
+    res.status(200).end();
+  } catch (e) {
+    const error = new Error(e);
+    res.status(500).send({ message: error.message });
+  }
+};
+
+const unSubscribe = async (req, res) => {
+  const { source, target } = req.body;
+  try {
+    if (!source || !target) throw 'Ошибка при отписке';
+
+    const isFriend = checkFriend(source, target);
+
+    if (isFriend) {
+      await main('friends').delete({ user1: isFriend.user1, user2: isFriend.user2 });
+      await main('followers').insert({ source_id: target, target_id: source });
+    } else {
+      await main('followers').delete().where();
+    }
+
+    res.status(200).end();
+  } catch (e) {
+    const error = new Error(e);
+    res.status(500).send({ message: error.message });
+  }
+};
+
 module.exports = {
   getUsers,
   getByID,
   uploadImagesByUser,
   uploadProfileImageByUser,
   getFollowersList,
+  subscribe,
+  unSubscribe,
 };

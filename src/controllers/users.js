@@ -92,7 +92,6 @@ const uploadProfileImageByUser = async (req, res) => {
 
     res.status(200).send(`${path}avatar.jpg`);
   } catch (e) {
-    console.log(e);
     const error = new Error(e);
     res.status(500).send({ message: error.message });
   }
@@ -116,10 +115,34 @@ const getFollowersList = async (req, res) => {
   }
 };
 
+const getFriendsList = async (req, res) => {
+  const { id: idUser } = req.params;
+  let friends = [];
+  try {
+    if (!idUser) throw 'Параметр idUser не найден';
+    const relations = await main('friends').where('user1', idUser).orWhere('user2', idUser);
+    const friendsIdArray = relations.map((el) => (el.user1 === idUser ? el.user1 : el.user2));
+
+    friends = await Promise.all(
+      friendsIdArray.map(async (el) => {
+        const user = await main('users').where('id', el).first();
+        return user;
+      }),
+    );
+
+    res.status(200).send(friends);
+  } catch (e) {
+    const error = new Error(e);
+    res.status(500).send({ message: error.message });
+  }
+};
+
 const checkSubscribe = async (source, target) => {
   const isSubscriber = await main('followers')
-    .where('source_id', target)
-    .where('target_id', source)
+    .where({
+      source_id: target,
+      target_id: source,
+    })
     .first();
 
   return !!isSubscriber;
@@ -127,10 +150,14 @@ const checkSubscribe = async (source, target) => {
 
 const checkFriend = async (user1, user2) => {
   const isFriend = await main('friends')
-    .where('user1', user1)
-    .where('user2', user2)
-    .orWhere('user1', user2)
-    .where('user2', user1)
+    .where({
+      user1,
+      user2,
+    })
+    .orWhere({
+      user1: user2,
+      user2: user1,
+    })
     .first();
 
   return isFriend;
@@ -142,7 +169,7 @@ const subscribe = async (req, res) => {
     if (!source || !target) throw 'Ошибка при подписке';
 
     if (checkSubscribe(source, target)) {
-      await main('followers').delete().where('source_id', target).where('target_id', source);
+      await main('followers').where({ source_id: target, target_id: source }).del();
       await main('friends').insert({ user1: source, user2: target });
     } else {
       await main('followers').insert({ source_id: source, target_id: target });
@@ -160,13 +187,13 @@ const unSubscribe = async (req, res) => {
   try {
     if (!source || !target) throw 'Ошибка при отписке';
 
-    const isFriend = checkFriend(source, target);
+    const isFriend = await checkFriend(source, target);
 
     if (isFriend) {
-      await main('friends').delete({ user1: isFriend.user1, user2: isFriend.user2 });
+      await main('friends').where({ user1: isFriend.user1, user2: isFriend.user2 }).del();
       await main('followers').insert({ source_id: target, target_id: source });
     } else {
-      await main('followers').delete().where();
+      await main('followers').where({ source_id: source, target_id: target }).del();
     }
 
     res.status(200).end();
@@ -184,4 +211,5 @@ module.exports = {
   getFollowersList,
   subscribe,
   unSubscribe,
+  getFriendsList,
 };

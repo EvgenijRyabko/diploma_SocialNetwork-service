@@ -8,6 +8,7 @@ const {
   getFollowersList,
   subscribe,
   unSubscribe,
+  getFriendsList,
 } = require('../../controllers/users');
 
 const router = Router();
@@ -15,6 +16,8 @@ const router = Router();
 router.get('/all', getUsers);
 
 router.get('/:id/followers', getFollowersList);
+
+router.get('/:id/friends', getFriendsList);
 
 router.post(
   '/uploadProfile/:id',

@@ -8,6 +8,7 @@ exports.up = function (knex) {
     table.integer('source_id').notNullable().comment('Отправитель');
     table.integer('target_id').notNullable().comment('Получатель');
     table.string('text').notNullable().comment('Текст сообщения');
+    table.timestamp('created_at').defaultTo(knex.fn.now()).comment('Время отправки');
 
     table.foreign('source_id').references('users.id').onUpdate('Cascade').onDelete('Cascade');
     table.foreign('target_id').references('users.id').onUpdate('Cascade').onDelete('Cascade');

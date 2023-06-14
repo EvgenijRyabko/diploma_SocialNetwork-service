@@ -3,15 +3,16 @@ const authRoutes = require('./auth/index');
 const postRoutes = require('./posts/index');
 const usersRoutes = require('./users/index');
 const dialogsRoutes = require('./dialogs/index');
+const CheckToken = require('../middlewares/auth.middleware');
 
 const router = Router();
 
 router.use('/auth', authRoutes);
 
-router.use('/users', usersRoutes);
+router.use('/users', CheckToken, usersRoutes);
 
-router.use('/posts', postRoutes);
+router.use('/posts', CheckToken, postRoutes);
 
-router.use('/dialogs', dialogsRoutes);
+router.use('/dialogs', CheckToken, dialogsRoutes);
 
 module.exports = router;

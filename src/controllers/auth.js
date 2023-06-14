@@ -51,6 +51,7 @@ const Auth = async (req, res) => {
       const token = (userData.auth_token = new JWT().createToken({
         login: userData.login,
         id_user: parseInt(userData.id),
+        exprires: 10,
       }));
 
       const payload = {
@@ -60,6 +61,7 @@ const Auth = async (req, res) => {
 
       res.status(200).send(payload);
     } catch (e) {
+      console.log(e);
       const error = errorHandler(e);
       res.status(error.code).send({ error: error.message });
     }
@@ -82,7 +84,6 @@ const Register = async (req, res) => {
       password,
       name: username,
     });
-    console.log('Вставка пользователя');
 
     res.status(200).end();
   } catch (e) {

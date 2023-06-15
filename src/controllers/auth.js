@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const { main } = require('../database/connection');
 const { errorHandler } = require('../utils/errorHandler');
 const AES = require('../crypto/AES');
@@ -48,11 +49,14 @@ const Auth = async (req, res) => {
   // eslint-disable-next-line no-shadow
   const successAuth = async (req, res) => {
     try {
-      const token = (userData.auth_token = new JWT().createToken({
-        login: userData.login,
-        id_user: parseInt(userData.id),
-        exprires: 10,
-      }));
+      const token = (userData.auth_token = jwt.sign(
+        {
+          login: userData.login,
+          id_user: parseInt(userData.id),
+        },
+        process.env.JWT_KEY,
+        { expiresIn: 60 },
+      ));
 
       const payload = {
         id_user: parseInt(userData.id),
@@ -61,7 +65,6 @@ const Auth = async (req, res) => {
 
       res.status(200).send(payload);
     } catch (e) {
-      console.log(e);
       const error = errorHandler(e);
       res.status(error.code).send({ error: error.message });
     }
@@ -87,7 +90,6 @@ const Register = async (req, res) => {
 
     res.status(200).end();
   } catch (e) {
-    console.log(e);
     const error = errorHandler(e);
     res.status(error.code).send({ error: error.message });
   }

@@ -55,7 +55,7 @@ const Auth = async (req, res) => {
           id_user: parseInt(userData.id),
         },
         process.env.JWT_KEY,
-        { expiresIn: 60 },
+        { expiresIn: 1800 },
       ));
 
       const payload = {

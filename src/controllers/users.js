@@ -84,7 +84,7 @@ const uploadProfileImageByUser = async (req, res) => {
 
     const checkPath = await checkDirectory(path);
 
-    if (!checkPath) await fs.promises.mkdir(path, { recursive: true });
+    if (!checkPath) await fs.promises.mkdir(`./src/uploads/${path}`, { recursive: true });
 
     const { file } = req.files;
 

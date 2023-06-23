@@ -1,4 +1,5 @@
 const fs = require('fs');
+const moment = require('moment');
 const { main } = require('../database/connection');
 
 const getUsers = async (req, res) => {
@@ -86,11 +87,17 @@ const uploadProfileImageByUser = async (req, res) => {
 
     if (!checkPath) await fs.promises.mkdir(`./src/uploads/${path}`, { recursive: true });
 
+    const user = await main('users').where('id', idUser).first();
+
+    if (!user) throw 'Ошибка при загрузке файла!';
+
+    await fs.promises.unlink(`./src/uploads/${user.profile_img}`);
+
     const { file } = req.files;
 
-    await writeProfileImage(`${path}avatar.jpg`, idUser, file.data);
+    await writeProfileImage(`${path}avatar_${moment().unix()}.jpg`, idUser, file.data);
 
-    res.status(200).send(`${path}avatar.jpg`);
+    res.status(200).send(`${path}avatar_${moment().unix()}.jpg`);
   } catch (e) {
     const error = new Error(e);
     res.status(500).send({ message: error.message });
